@@ -1,18 +1,19 @@
-package expr
+package nodes
 
 import (
 	"fmt"
 
+	"github.com/shanzi/gexpr"
 	"github.com/shanzi/gexpr/types"
 	"github.com/shanzi/gexpr/values"
 )
 
 type _expr_literal_node struct {
-	literalType   Type
+	literalType   types.Type
 	literalString string
 }
 
-func (self *_expr_literal_node) Value(context ExprContext) values.Value {
+func (self *_expr_literal_node) Value(context gexpr.ExprContext) values.Value {
 	lb := ExprContext.LiteralBuilder()
 
 	if types.INTEGER.match(self.literalType) {

@@ -1,4 +1,4 @@
-package expr
+package gexpr
 
 import (
 	"github.com/shanzi/gexpr/types"
@@ -6,8 +6,8 @@ import (
 )
 
 type Expr interface {
-	Evaluate(params map[string]Value) values.Value
-	EvaluateType(params map[string]Type) types.Type
+	Evaluate(params map[string]values.Value) values.Value
+	EvaluateType(params map[string]types.Type) types.Type
 	Eval(context ExprContext) ExprContext
 
 	String() string

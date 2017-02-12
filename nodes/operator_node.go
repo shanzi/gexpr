@@ -1,19 +1,20 @@
-package expr
+package nodes
 
 import (
 	"fmt"
 	"go/token"
 
+	"github.com/shanzi/gexpr"
 	"github.com/shanzi/gexpr/values"
 )
 
 type _expr_operator_node struct {
 	op_code    int
-	parameter1 ExprNode
-	parameter2 ExprNode
+	parameter1 gexpr.ExprNode
+	parameter2 gexpr.ExprNode
 }
 
-func (self *_expr_operator_node) Value(context ExprContext) values.Value {
+func (self *_expr_operator_node) Value(context gexpr.ExprContext) values.Value {
 	op := context.Operators()
 	v1 := self.parameter1.Value(context)
 	v2 := self.parameter2.Value(context)
