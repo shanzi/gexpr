@@ -33,8 +33,16 @@ type OperatorInterface interface {
 	LEQ(a, b Value) Value       // <=
 
 	// Boolean Operators
-	BOOL_AND(a, b Value) Value
-	BOOL_OR(a, b Value) Value
+	BOOL_AND(a, b Value) Value // &&
+	BOOL_OR(a, b Value) Value  // ||
+
+	// Unary operators
+	INC(a Value) Value      // ++
+	DEC(a Value) Value      // --
+	INV(a Value) Value      // ^
+	BOOL_NOT(a Value) Value // !
+	NEGATIVE(a Value) Value // !
+	POSITIVE(a Value) Value // !
 }
 
 type _operators struct{}
@@ -278,4 +286,68 @@ func (self *_operators) BOOL_OR(a, b Value) Value {
 	}
 
 	panic(fmt.Sprintf("Can not apply BOOL_OR operators on %s and %s", a.Type().Name(), b.Type().Name()))
+}
+
+func (self *_operators) INC(a Value) Value {
+	if types.AssertMatch(types.INTEGER, a.Type()) {
+		return Integer(a.Int64() + 1)
+	}
+
+	if types.AssertMatch(types.FLOAT, a.Type()) {
+		return Float(a.Float64() + 1)
+	}
+
+	panic(fmt.Sprintf("Can not apply INC operators on %s", a.Type().Name()))
+}
+
+func (self *_operators) DEC(a Value) Value {
+	if types.AssertMatch(types.INTEGER, a.Type()) {
+		return Integer(a.Int64() - 1)
+	}
+
+	if types.AssertMatch(types.FLOAT, a.Type()) {
+		return Float(a.Float64() - 1)
+	}
+
+	panic(fmt.Sprintf("Can not apply DEC operators on %s", a.Type().Name()))
+}
+
+func (self *_operators) INV(a Value) Value {
+	if types.AssertMatch(types.INTEGER, a.Type()) {
+		return Integer(^a.Int64())
+	}
+
+	panic(fmt.Sprintf("Can not apply INV operators on %s", a.Type().Name()))
+}
+
+func (self *_operators) BOOL_NOT(a Value) Value {
+	if types.AssertMatch(types.BOOLEAN, a.Type()) {
+		return Boolean(!a.Bool())
+	}
+
+	panic(fmt.Sprintf("Can not apply BOOL_NOT operators on %s", a.Type().Name()))
+}
+
+func (self *_operators) NEGATIVE(a Value) Value {
+	if types.AssertMatch(types.INTEGER, a.Type()) {
+		return Integer(-a.Int64())
+	}
+
+	if types.AssertMatch(types.FLOAT, a.Type()) {
+		return Float(-a.Float64())
+	}
+
+	panic(fmt.Sprintf("Can not apply BOOL_NOT operators on %s", a.Type().Name()))
+}
+
+func (self *_operators) POSITIVE(a Value) Value {
+	if types.AssertMatch(types.BOOLEAN, a.Type()) {
+		return Integer(+a.Int64())
+	}
+
+	if types.AssertMatch(types.FLOAT, a.Type()) {
+		return Float(-a.Float64())
+	}
+
+	panic(fmt.Sprintf("Can not apply BOOL_NOT operators on %s", a.Type().Name()))
 }

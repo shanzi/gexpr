@@ -8,21 +8,27 @@ import (
 	"github.com/shanzi/gexpr/values"
 )
 
-type _expr_operator_node struct {
-	kind       int
-	name       string
-	parameter1 expr.ExprNode
-	parameter2 expr.ExprNode
+type _expr_binary_operator_node struct {
+	kind int
+	name string
+	X    expr.ExprNode
+	Y    expr.ExprNode
+}
+
+type _expr_unary_operator_node struct {
+	kind int
+	name string
+	X    expr.ExprNode
 }
 
 func NewBinaryOperatorNode(kind int, a, b expr.ExprNode) expr.ExprNode {
-	return &_expr_operator_node{kind, GetOpName(kind), a, b}
+	return &_expr_binary_operator_node{kind, GetOpName(kind), a, b}
 }
 
-func (self *_expr_operator_node) Value(context expr.ExprContext) values.Value {
+func (self *_expr_binary_operator_node) Value(context expr.ExprContext) values.Value {
 	op := context.Operators()
-	v1 := self.parameter1.Value(context)
-	v2 := self.parameter2.Value(context)
+	v1 := self.X.Value(context)
+	v2 := self.Y.Value(context)
 	switch token.Token(self.kind) {
 
 	case token.ADD:
@@ -71,8 +77,8 @@ func (self *_expr_operator_node) Value(context expr.ExprContext) values.Value {
 	panic(fmt.Sprintf("Unknown operator code: %d", self.kind))
 }
 
-func (self *_expr_operator_node) String() string {
-	return fmt.Sprintf("(%s %s %s)", self.name, self.parameter1.String(), self.parameter2.String())
+func (self *_expr_binary_operator_node) String() string {
+	return fmt.Sprintf("(%s %s %s)", self.name, self.X.String(), self.Y.String())
 }
 
 func GetOpName(kind int) string {
@@ -115,5 +121,42 @@ func GetOpName(kind int) string {
 		return "&&"
 	case token.LOR:
 		return "||"
+	case token.INC:
+		return "++"
+	case token.DEC:
+		return "--"
+	case token.NOT:
+		return "!"
+
 	}
+}
+
+func NewUnaryOperatorNode(kind int, a expr.ExprNode) expr.ExprNode {
+	return &_expr_unary_operator_node{kind, GetOpName(kind), a}
+}
+
+func (self *_expr_unary_operator_node) Value(context expr.ExprContext) values.Value {
+	op := context.Operators()
+	v1 := self.X.Value(context)
+	switch token.Token(self.kind) {
+
+	case token.ADD:
+		return op.POSITIVE(v1)
+	case token.SUB:
+		return op.NEGATIVE(v1)
+	case token.XOR:
+		return op.INV(v1)
+	case token.INC:
+		return op.INC(v1)
+	case token.DEC:
+		return op.DEC(v1)
+	case token.NOT:
+		return op.BOOL_NOT(v1)
+	}
+
+	panic(fmt.Sprintf("Unknown operator code: %d", self.kind))
+}
+
+func (self *_expr_unary_operator_node) String() string {
+	return fmt.Sprintf("(%s %s)", self.name, self.X.String())
 }

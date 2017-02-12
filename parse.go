@@ -37,6 +37,11 @@ func transform(expr ast.Expr) expr.ExprNode {
 			transform(typedexpr.X),
 			transform(typedexpr.Y),
 		)
+	case *ast.UnaryExpr:
+		return nodes.NewUnaryOperatorNode(
+			int(typedexpr.Op),
+			transform(typedexpr.X),
+		)
 	case *ast.ParenExpr:
 		return transform(typedexpr.X)
 	case *ast.Ident:
