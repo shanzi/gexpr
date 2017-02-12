@@ -4,47 +4,26 @@ import (
 	"fmt"
 	"go/token"
 
-	"github.com/shanzi/gexpr"
+	"github.com/shanzi/gexpr/expr"
 	"github.com/shanzi/gexpr/values"
 )
 
 type _expr_operator_node struct {
 	kind       int
-	parameter1 gexpr.ExprNode
-	parameter2 gexpr.ExprNode
+	name       string
+	parameter1 expr.ExprNode
+	parameter2 expr.ExprNode
 }
 
-func NewBinaryOperatorNode(kind int, a, b ExprNode) {
-	switch kind {
-	default:
-		panic(fmt.Sprintf("Unsupported binary operator kind: %d", kind))
-	case token.ADD:
-	case token.SUB:
-	case token.MUL:
-	case token.QUO:
-	case token.REM:
-	case token.AND:
-	case token.OR:
-	case token.XOR:
-	case token.SHL:
-	case token.SHR:
-	case token.EQL:
-	case token.NEQ:
-	case token.GTR:
-	case token.LSS:
-	case token.GEQ:
-	case token.LEQ:
-	case token.LAND:
-	case token.LOR:
-	}
-	return &_expr_operator_node{kind, a, b}
+func NewBinaryOperatorNode(kind int, a, b expr.ExprNode) expr.ExprNode {
+	return &_expr_operator_node{kind, GetOpName(kind), a, b}
 }
 
-func (self *_expr_operator_node) Value(context gexpr.ExprContext) values.Value {
+func (self *_expr_operator_node) Value(context expr.ExprContext) values.Value {
 	op := context.Operators()
 	v1 := self.parameter1.Value(context)
 	v2 := self.parameter2.Value(context)
-	switch kind {
+	switch token.Token(self.kind) {
 
 	case token.ADD:
 		return op.ADD(v1, v2)
@@ -55,7 +34,7 @@ func (self *_expr_operator_node) Value(context gexpr.ExprContext) values.Value {
 	case token.QUO:
 		return op.DIV(v1, v2)
 	case token.REM:
-		return op.REM(v1, v2)
+		return op.MOD(v1, v2)
 
 	case token.AND:
 		return op.AND(v1, v2)
@@ -90,4 +69,51 @@ func (self *_expr_operator_node) Value(context gexpr.ExprContext) values.Value {
 	}
 
 	panic(fmt.Sprintf("Unknown operator code: %d", self.kind))
+}
+
+func (self *_expr_operator_node) String() string {
+	return fmt.Sprintf("(%s %s %s)", self.name, self.parameter1.String(), self.parameter2.String())
+}
+
+func GetOpName(kind int) string {
+	switch token.Token(kind) {
+	default:
+		panic(fmt.Sprintf("Unsupported binary operator kind: %d", kind))
+	case token.ADD:
+		return "+"
+	case token.SUB:
+		return "-"
+	case token.MUL:
+		return "*"
+	case token.QUO:
+		return "/"
+	case token.REM:
+		return "%"
+	case token.AND:
+		return "&"
+	case token.OR:
+		return "|"
+	case token.XOR:
+		return "^"
+	case token.SHL:
+		return "<<"
+	case token.SHR:
+		return ">>"
+	case token.EQL:
+		return "=="
+	case token.NEQ:
+		return "!="
+	case token.GTR:
+		return ">"
+	case token.LSS:
+		return "<"
+	case token.GEQ:
+		return ">="
+	case token.LEQ:
+		return "<="
+	case token.LAND:
+		return "&&"
+	case token.LOR:
+		return "||"
+	}
 }

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"go/token"
 
-	"github.com/shanzi/gexpr"
+	"github.com/shanzi/gexpr/expr"
 	"github.com/shanzi/gexpr/types"
 	"github.com/shanzi/gexpr/values"
 )
@@ -14,9 +14,9 @@ type _expr_literal_node struct {
 	literalString string
 }
 
-func NewLiteralNode(kind int, value string) ExprNode {
+func NewLiteralNode(kind int, value string) expr.ExprNode {
 	var littype types.Type
-	switch kind {
+	switch token.Token(kind) {
 	case token.INT:
 		littype = types.INTEGER
 	case token.FLOAT:
@@ -32,24 +32,28 @@ func NewLiteralNode(kind int, value string) ExprNode {
 	return &_expr_literal_node{littype, value}
 }
 
-func (self *_expr_literal_node) Value(context gexpr.ExprContext) values.Value {
-	lb := ExprContext.LiteralBuilder()
+func (self *_expr_literal_node) Value(context expr.ExprContext) values.Value {
+	lb := context.LiteralBuilder()
 
-	if types.INTEGER.match(self.literalType) {
+	if types.INTEGER.Match(self.literalType) {
 		return lb.Integer(self.literalString)
 	}
 
-	if types.FLOAT.match(self.literalType) {
+	if types.FLOAT.Match(self.literalType) {
 		return lb.Float(self.literalString)
 	}
 
-	if types.BOOL.match(self.literalType) {
+	if types.BOOLEAN.Match(self.literalType) {
 		return lb.Boolean(self.literalString)
 	}
 
-	if types.String.match(self.literalType) {
+	if types.STRING.Match(self.literalType) {
 		return lb.String(self.literalString)
 	}
 
 	panic(fmt.Sprintf("Can not construct literal of type %s", self.literalType.Name()))
+}
+
+func (self *_expr_literal_node) String() string {
+	return self.literalString
 }

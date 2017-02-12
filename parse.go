@@ -1,39 +1,46 @@
 package gexpr
 
 import (
+	"errors"
 	"fmt"
 	"go/ast"
+	"go/parser"
+
+	"github.com/shanzi/gexpr/expr"
+	"github.com/shanzi/gexpr/nodes"
 )
 
-func Parse(exprStr string) (res Expr, err error) {
+func Parse(exprStr string) (res expr.Expr, err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			res = nil
-			err = r
+			if rerr, ok := r.(string); ok {
+				err = errors.New(rerr)
+			}
 		}
 	}()
-	if expr, err := ast.Parse(exprStr); err != nil {
+	if exp, err := parser.ParseExpr(exprStr); err != nil {
 		return nil, err
 	} else {
-		root := transform(expr)
-		return &_expr{root, exprStr}
+		root := transform(exp)
+		return expr.New(root, exprStr), nil
 	}
 }
 
-func transform(expr ast.Expr) ExprNode {
+func transform(expr ast.Expr) expr.ExprNode {
 	switch typedexpr := expr.(type) {
-	case ast.BasicLit:
-		return NewLiteralNode(typedexpr.Kind, typedexpr.Value)
-	case ast.BinaryExpr:
-		return NewBinaryOperatorNode(
-			typedexpr.Op,
+	case *ast.BasicLit:
+		return nodes.NewLiteralNode(int(typedexpr.Kind), typedexpr.Value)
+	case *ast.BinaryExpr:
+		return nodes.NewBinaryOperatorNode(
+			int(typedexpr.Op),
 			transform(typedexpr.X),
 			transform(typedexpr.Y),
 		)
-	case ast.ParenExpr:
+	case *ast.ParenExpr:
 		return transform(typedexpr.X)
-	case ast.Ident:
-		return NewValueNode(typedexpr.Name)
+	case *ast.Ident:
+		return nodes.NewValueNode(typedexpr.Name)
 	default:
 		panic(fmt.Sprintf("Unsupported expr: %+v", expr))
 	}

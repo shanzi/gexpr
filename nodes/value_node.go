@@ -3,7 +3,7 @@ package nodes
 import (
 	"fmt"
 
-	"github.com/shanzi/gexpr"
+	"github.com/shanzi/gexpr/expr"
 	"github.com/shanzi/gexpr/values"
 )
 
@@ -11,14 +11,18 @@ type _expr_value_node struct {
 	name string
 }
 
-func NewValueNode(name string) ExprNode {
+func NewValueNode(name string) expr.ExprNode {
 	return &_expr_value_node{name}
 }
 
-func (self *_expr_value_node) Value(context gexpr.ExprContext) values.Value {
+func (self *_expr_value_node) Value(context expr.ExprContext) values.Value {
 	params := context.Params()
-	if value, ok := params[self.name]; value {
+	if value, ok := params[self.name]; ok {
 		return value
 	}
 	panic(fmt.Sprintf("Undefined variable: %s", self.name))
+}
+
+func (self *_expr_value_node) String() string {
+	return self.name
 }
