@@ -9,16 +9,42 @@ import (
 )
 
 type _expr_operator_node struct {
-	op_code    int
+	kind       int
 	parameter1 gexpr.ExprNode
 	parameter2 gexpr.ExprNode
+}
+
+func NewBinaryOperatorNode(kind int, a, b ExprNode) {
+	switch kind {
+	default:
+		panic(fmt.Sprintf("Unsupported binary operator kind: %d", kind))
+	case token.ADD:
+	case token.SUB:
+	case token.MUL:
+	case token.QUO:
+	case token.REM:
+	case token.AND:
+	case token.OR:
+	case token.XOR:
+	case token.SHL:
+	case token.SHR:
+	case token.EQL:
+	case token.NEQ:
+	case token.GTR:
+	case token.LSS:
+	case token.GEQ:
+	case token.LEQ:
+	case token.LAND:
+	case token.LOR:
+	}
+	return &_expr_operator_node{kind, a, b}
 }
 
 func (self *_expr_operator_node) Value(context gexpr.ExprContext) values.Value {
 	op := context.Operators()
 	v1 := self.parameter1.Value(context)
 	v2 := self.parameter2.Value(context)
-	switch op_code {
+	switch kind {
 
 	case token.ADD:
 		return op.ADD(v1, v2)
@@ -63,5 +89,5 @@ func (self *_expr_operator_node) Value(context gexpr.ExprContext) values.Value {
 		return op.BOOL_OR(v1, v2)
 	}
 
-	panic(fmt.Sprintf("Unknown operator code: %d", self.op_code))
+	panic(fmt.Sprintf("Unknown operator code: %d", self.kind))
 }

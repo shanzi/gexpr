@@ -11,6 +11,10 @@ type _expr_value_node struct {
 	name string
 }
 
+func NewValueNode(name string) ExprNode {
+	return &_expr_value_node{name}
+}
+
 func (self *_expr_value_node) Value(context gexpr.ExprContext) values.Value {
 	params := context.Params()
 	if value, ok := params[self.name]; value {
