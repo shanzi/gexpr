@@ -199,7 +199,7 @@ func (self *_operators) LESS(a, b values.Value) values.Value {
 	panic(fmt.Sprintf("Can not apply LESS operators on %s and %s", a.Type().Name(), b.Type().Name()))
 }
 
-func (self *_operators) GTE(a, b values.Value) values.Value {
+func (self *_operators) GEQ(a, b values.Value) values.Value {
 	if types.AssertMatch(types.INTEGER, a.Type(), b.Type()) {
 		return boolean_symbol
 	}
@@ -212,10 +212,10 @@ func (self *_operators) GTE(a, b values.Value) values.Value {
 		return boolean_symbol
 	}
 
-	panic(fmt.Sprintf("Can not apply GTE operators on %s and %s", a.Type().Name(), b.Type().Name()))
+	panic(fmt.Sprintf("Can not apply GEQ operators on %s and %s", a.Type().Name(), b.Type().Name()))
 }
 
-func (self *_operators) LTE(a, b values.Value) values.Value {
+func (self *_operators) LEQ(a, b values.Value) values.Value {
 	if types.AssertMatch(types.INTEGER, a.Type(), b.Type()) {
 		return boolean_symbol
 	}
@@ -228,7 +228,7 @@ func (self *_operators) LTE(a, b values.Value) values.Value {
 		return boolean_symbol
 	}
 
-	panic(fmt.Sprintf("Can not apply GTE operators on %s and %s", a.Type().Name(), b.Type().Name()))
+	panic(fmt.Sprintf("Can not apply LEQ operators on %s and %s", a.Type().Name(), b.Type().Name()))
 }
 
 func (self *_operators) BOOL_AND(a, b values.Value) values.Value {

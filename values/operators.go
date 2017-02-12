@@ -29,8 +29,8 @@ type OperatorInterface interface {
 	NOT_EQUAL(a, b Value) Value // !=
 	GREATER(a, b Value) Value   // >
 	LESS(a, b Value) Value      // <
-	GTE(a, b Value) Value       // >=
-	LTE(a, b Value) Value       // <=
+	GEQ(a, b Value) Value       // >=
+	LEQ(a, b Value) Value       // <=
 
 	// Boolean Operators
 	BOOL_AND(a, b Value) Value
@@ -232,7 +232,7 @@ func (self *_operators) LESS(a, b Value) Value {
 	panic(fmt.Sprintf("Can not apply LESS operators on %s and %s", a.Type().Name(), b.Type().Name()))
 }
 
-func (self *_operators) GTE(a, b Value) Value {
+func (self *_operators) GEQ(a, b Value) Value {
 	if types.AssertMatch(types.INTEGER, a.Type(), b.Type()) {
 		return Boolean(a.Int64() >= b.Int64())
 	}
@@ -245,10 +245,10 @@ func (self *_operators) GTE(a, b Value) Value {
 		return Boolean(strings.Compare(a.String(), b.String()) >= 0)
 	}
 
-	panic(fmt.Sprintf("Can not apply GTE operators on %s and %s", a.Type().Name(), b.Type().Name()))
+	panic(fmt.Sprintf("Can not apply GEQ operators on %s and %s", a.Type().Name(), b.Type().Name()))
 }
 
-func (self *_operators) LTE(a, b Value) Value {
+func (self *_operators) LEQ(a, b Value) Value {
 	if types.AssertMatch(types.INTEGER, a.Type(), b.Type()) {
 		return Boolean(a.Int64() <= b.Int64())
 	}
@@ -261,7 +261,7 @@ func (self *_operators) LTE(a, b Value) Value {
 		return Boolean(strings.Compare(a.String(), b.String()) <= 0)
 	}
 
-	panic(fmt.Sprintf("Can not apply GTE operators on %s and %s", a.Type().Name(), b.Type().Name()))
+	panic(fmt.Sprintf("Can not apply LEQ operators on %s and %s", a.Type().Name(), b.Type().Name()))
 }
 
 func (self *_operators) BOOL_AND(a, b Value) Value {
