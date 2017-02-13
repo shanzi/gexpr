@@ -44,6 +44,8 @@ func transform(expr ast.Expr) expr.ExprNode {
 			int(typedexpr.Op),
 			transform(typedexpr.X),
 		)
+	case *ast.CallExpr:
+		return createFuncNode(typedexpr)
 	case *ast.ParenExpr:
 		return transform(typedexpr.X)
 	case *ast.Ident:
@@ -51,4 +53,13 @@ func transform(expr ast.Expr) expr.ExprNode {
 	default:
 		panic(fmt.Sprintf("Unsupported expr: %+v", expr))
 	}
+}
+
+func createFuncNode(exp *ast.CallExpr) expr.ExprNode {
+	args := exp.Args
+	argvalues := make([]expr.ExprNode, len(args))
+	for _, arg := range args {
+		argvalues = append(argvalues, transform(arg))
+	}
+	return nodes.NewFuncNode(transform(exp.Fun), argvalues)
 }

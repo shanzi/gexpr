@@ -13,6 +13,7 @@ type Func interface {
 	AcceptTypes(tps []types.Type) bool
 
 	Call(values []Value) Value
+	CallType(types []types.Type) types.Type
 }
 
 type _func struct {
@@ -72,4 +73,8 @@ func (self *_func) Call(values []Value) Value {
 	} else {
 		return ret
 	}
+}
+
+func (self *_func) CallType(ty []types.Type) types.Type {
+	return self.type_.ReturnType()
 }
