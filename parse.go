@@ -16,6 +16,8 @@ func Parse(exprStr string) (res expr.Expr, err error) {
 			res = nil
 			if rerr, ok := r.(string); ok {
 				err = errors.New(rerr)
+			} else {
+				err = errors.New("Can not parse expression")
 			}
 		}
 	}()

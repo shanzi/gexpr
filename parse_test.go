@@ -17,7 +17,8 @@ func TestParseArthmeticExpr(t *testing.T) {
 func TestParseBooleanExpr(t *testing.T) {
 	if v, err := Parse("(!var1) && (1 > 2) || (10 <= var2)"); err != nil {
 		t.Error("Parse failed:", err)
-	} else {
-		fmt.Println(v.String())
+	} else if s := v.String(); s != "(|| (&& (! var1) (> 1 2)) (<= 10 var2))" {
+		fmt.Println(s)
+		t.Error("Wrong parse result:", s)
 	}
 }
