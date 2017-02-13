@@ -16,6 +16,13 @@ func NewValueNode(name string) expr.ExprNode {
 }
 
 func (self *_expr_value_node) Value(context expr.ExprContext) values.Value {
+	if self.name == "true" {
+		return context.LiteralBuilder().Boolean("true")
+	}
+	if self.name == "false" {
+		return context.LiteralBuilder().Boolean("false")
+	}
+
 	params := context.Params()
 	if value, ok := params[self.name]; ok {
 		return value

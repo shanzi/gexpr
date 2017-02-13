@@ -11,3 +11,7 @@ func (self _any) Name() string {
 func (self _any) Match(that Type) bool {
 	return true
 }
+
+func (self _any) Equals(that Type) bool {
+	return self == that
+}

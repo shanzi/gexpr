@@ -45,5 +45,9 @@ func (self *_literal_builder) Boolean(literal string) Value {
 }
 
 func (self *_literal_builder) String(literal string) Value {
-	return String(literal)
+	if value, err := strconv.Unquote(literal); err != nil {
+		panic(fmt.Sprintf("Can not construct STRING from '%s': %s", literal, err))
+	} else {
+		return String(value)
+	}
 }

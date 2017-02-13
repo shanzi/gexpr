@@ -1,6 +1,7 @@
 package symbols
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/shanzi/gexpr/types"
@@ -20,23 +21,34 @@ var float_symbol = &base_symbol{types.FLOAT}
 var boolean_symbol = &base_symbol{types.BOOLEAN}
 var string_symbol = &base_symbol{types.STRING}
 
+func Pack(tp types.Type) (Symbol, error) {
+	if types.INTEGER.Equals(tp) {
+		return integer_symbol, nil
+	}
+
+	if types.FLOAT.Equals(tp) {
+		return float_symbol, nil
+	}
+
+	if types.BOOLEAN.Equals(tp) {
+		return boolean_symbol, nil
+	}
+
+	if types.STRING.Equals(tp) {
+		return string_symbol, nil
+	}
+
+	return nil, errors.New(fmt.Sprint("Unsupported type: ", tp.Name()))
+}
+
+func Unpack(v values.Value) (types.Type, error) {
+	return v.Type(), nil
+}
+
 func GetSymbol(typ types.Type) Symbol {
-	if types.INTEGER.Equals(typ) {
-		return integer_symbol
+	if sym, err := Pack(typ); err == nil {
+		return sym
 	}
-
-	if types.FLOAT.Equals(typ) {
-		return float_symbol
-	}
-
-	if types.BOOLEAN.Equals(typ) {
-		return boolean_symbol
-	}
-
-	if types.STRING.Equals(typ) {
-		return string_symbol
-	}
-
 	panic(fmt.Sprintf("Unsupported symbol type: %s", typ.Name()))
 }
 
@@ -57,5 +69,5 @@ func (self *base_symbol) Bool() bool {
 }
 
 func (self *base_symbol) String() string {
-	return fmt.Sprintf("symbol<%s>(%s)", self.Type().Name(), self.literal)
+	return fmt.Sprintf("symbol<%s>", self.Type().Name())
 }

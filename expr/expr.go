@@ -2,6 +2,7 @@ package expr
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/shanzi/gexpr/values"
 )
@@ -29,6 +30,7 @@ func New(root ExprNode, exprStr string) Expr {
 func (self *_expr) Eval(context ExprContext) (v values.Value, e error) {
 	defer func() {
 		if r := recover(); r != nil {
+			fmt.Println(r)
 			v = nil
 			if msg, ok := r.(string); ok {
 				e = errors.New(msg)

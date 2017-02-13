@@ -21,8 +21,6 @@ func NewLiteralNode(kind int, value string) expr.ExprNode {
 		littype = types.INTEGER
 	case token.FLOAT:
 		littype = types.FLOAT
-	case token.CHAR:
-		littype = types.STRING
 	case token.STRING:
 		littype = types.STRING
 	default:

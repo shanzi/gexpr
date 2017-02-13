@@ -18,8 +18,16 @@ type Value interface {
 
 func Pack(v interface{}) (Value, error) {
 	switch value := v.(type) {
+	case int:
+		return Integer(value), nil
+	case int16:
+		return Integer(value), nil
+	case int32:
+		return Integer(value), nil
 	case int64:
 		return Integer(value), nil
+	case float32:
+		return Float(value), nil
 	case float64:
 		return Float(value), nil
 	case bool:
@@ -45,5 +53,5 @@ func Unpack(v Value) (interface{}, error) {
 	if tp.Match(types.STRING) {
 		return v.String(), nil
 	}
-	return nil, errors.New(fmt.Sprint("Can not unpack value of Type: ", tp.Name()))
+	return nil, errors.New(fmt.Sprint("Can not unpack value of type: ", tp.Name()))
 }

@@ -247,7 +247,7 @@ func (self *_operators) BOOL_OR(a, b values.Value) values.Value {
 	panic(fmt.Sprintf("Can not apply BOOL_OR operators on %s and %s", a.Type().Name(), b.Type().Name()))
 }
 
-func (self *_operators) INC(a Value) Value {
+func (self *_operators) INC(a values.Value) values.Value {
 	if types.AssertMatch(types.INTEGER, a.Type()) {
 		return integer_symbol
 	}
@@ -259,7 +259,7 @@ func (self *_operators) INC(a Value) Value {
 	panic(fmt.Sprintf("Can not apply INC operators on %s", a.Type().Name()))
 }
 
-func (self *_operators) DEC(a Value) Value {
+func (self *_operators) DEC(a values.Value) values.Value {
 	if types.AssertMatch(types.INTEGER, a.Type()) {
 		return integer_symbol
 	}
@@ -271,7 +271,7 @@ func (self *_operators) DEC(a Value) Value {
 	panic(fmt.Sprintf("Can not apply DEC operators on %s", a.Type().Name()))
 }
 
-func (self *_operators) INV(a Value) Value {
+func (self *_operators) INV(a values.Value) values.Value {
 	if types.AssertMatch(types.INTEGER, a.Type()) {
 		return integer_symbol
 	}
@@ -279,7 +279,7 @@ func (self *_operators) INV(a Value) Value {
 	panic(fmt.Sprintf("Can not apply INV operators on %s", a.Type().Name()))
 }
 
-func (self *_operators) BOOL_NOT(a Value) Value {
+func (self *_operators) BOOL_NOT(a values.Value) values.Value {
 	if types.AssertMatch(types.BOOLEAN, a.Type()) {
 		return boolean_symbol
 	}
@@ -287,7 +287,7 @@ func (self *_operators) BOOL_NOT(a Value) Value {
 	panic(fmt.Sprintf("Can not apply BOOL_NOT operators on %s", a.Type().Name()))
 }
 
-func (self *_operators) NEGATIVE(a Value) Value {
+func (self *_operators) NEGATIVE(a values.Value) values.Value {
 	if types.AssertMatch(types.INTEGER, a.Type()) {
 		return integer_symbol
 	}
@@ -299,7 +299,7 @@ func (self *_operators) NEGATIVE(a Value) Value {
 	panic(fmt.Sprintf("Can not apply BOOL_NOT operators on %s", a.Type().Name()))
 }
 
-func (self *_operators) POSITIVE(a Value) Value {
+func (self *_operators) POSITIVE(a values.Value) values.Value {
 	if types.AssertMatch(types.BOOLEAN, a.Type()) {
 		return integer_symbol
 	}
