@@ -21,7 +21,7 @@ func NewStruct(mapping map[string]Type) Struct {
 
 func (self _struct) Name() string {
 	structmap := (map[string]Type)(self)
-	fields := make([]string, len(structmap))
+	fields := make([]string, 0, len(structmap))
 	for k, v := range structmap {
 		fields = append(fields, fmt.Sprintf("%s: %s", k, v.Name()))
 	}

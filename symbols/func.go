@@ -7,11 +7,16 @@ import (
 	"github.com/shanzi/gexpr/values"
 )
 
+type Func interface {
+	values.Func
+	SymbolName() string
+}
+
 type _func_symbol struct {
 	func_obj values.Func
 }
 
-func PackFunc(f values.Func) values.Func {
+func PackFunc(f values.Func) Func {
 	return &_func_symbol{f}
 }
 
@@ -20,15 +25,15 @@ func (self *_func_symbol) Type() types.Type {
 }
 
 func (self *_func_symbol) Int64() int64 {
-	panic("Not Implemented!")
+	panic("Not implemented!")
 }
 
 func (self *_func_symbol) Float64() float64 {
-	panic("Not Implemented!")
+	panic("Not implemented!")
 }
 
 func (self *_func_symbol) Bool() bool {
-	panic("Not Implemented!")
+	panic("Not implemented!")
 }
 
 func (self *_func_symbol) String() string {
@@ -63,4 +68,8 @@ func (self *_func_symbol) Call(values []values.Value) values.Value {
 
 func (self *_func_symbol) CallType(tps []types.Type) types.Type {
 	return self.func_obj.CallType(tps)
+}
+
+func (self *_func_symbol) SymbolName() string {
+	return self.String()
 }

@@ -20,23 +20,23 @@ type UnionTypes interface {
 
 type _union []Type
 
-func NewUnion(subtypes ...Type) UnionTypes {
-	types := make([]Type, len(subtypes))
-	for _, subtype := range subtypes {
+func NewUnion(subtps ...Type) UnionTypes {
+	tps := make([]Type, 0, len(subtps))
+	for _, subtype := range subtps {
 		if _, ok := subtype.(UnionTypes); ok {
 			panic("UnionTypes can not be nested!")
 		}
-		if !_union(types).Contains(subtype) {
-			types = append(types, subtype)
+		if !_union(tps).Contains(subtype) {
+			tps = append(tps, subtype)
 		}
 	}
-	return _union(types)
+	return _union(tps)
 }
 
 func (self _union) Name() string {
-	types := ([]Type)(self)
-	names := make([]string, len(types))
-	for _, t := range types {
+	tps := ([]Type)(self)
+	names := make([]string, 0, len(tps))
+	for _, t := range tps {
 		names = append(names, t.Name())
 	}
 	sort.Strings(names)
@@ -44,7 +44,7 @@ func (self _union) Name() string {
 }
 
 func (self _union) Match(that Type) bool {
-	types := ([]Type)(self)
+	tps := ([]Type)(self)
 	if thatunion, ok := that.(UnionTypes); ok {
 		// `that` is a union type
 		for _, subtype := range thatunion.TypeList() {
@@ -55,7 +55,7 @@ func (self _union) Match(that Type) bool {
 		return true
 	} else {
 		// `that` is not a union type
-		for _, t := range types {
+		for _, t := range tps {
 			if t.Match(that) {
 				return true
 			}
@@ -85,36 +85,36 @@ func (self _union) Equals(that Type) bool {
 }
 
 func (self _union) Union(that UnionTypes) UnionTypes {
-	types := make([]Type, self.Size()+that.Size())
+	tps := make([]Type, 0, self.Size()+that.Size())
 	for _, t := range self.TypeList() {
-		types = append(types, t)
+		tps = append(tps, t)
 	}
 	for _, t := range that.TypeList() {
 		if !self.Contains(t) {
-			types = append(types, t)
+			tps = append(tps, t)
 		}
 	}
-	return _union(types)
+	return _union(tps)
 }
 
 func (self _union) Subtract(that UnionTypes) UnionTypes {
-	types := make([]Type, self.Size())
+	tps := make([]Type, 0, self.Size())
 	for _, t := range self.TypeList() {
 		if !that.Contains(t) {
-			types = append(types, t)
+			tps = append(tps, t)
 		}
 	}
-	return _union(types)
+	return _union(tps)
 }
 
 func (self _union) Intersect(that UnionTypes) UnionTypes {
-	types := make([]Type, self.Size())
+	tps := make([]Type, 0, self.Size())
 	for _, t := range self.TypeList() {
 		if that.Contains(t) {
-			types = append(types, t)
+			tps = append(tps, t)
 		}
 	}
-	return _union(types)
+	return _union(tps)
 }
 
 func (self _union) Size() int {

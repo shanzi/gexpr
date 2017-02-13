@@ -22,7 +22,7 @@ func NewFunc(argtypes []Type, rettype Type) Func {
 }
 
 func (self *_func) Name() string {
-	argnames := make([]string, len(self.args))
+	argnames := make([]string, 0, len(self.args))
 	for _, v := range self.args {
 		argnames = append(argnames, v.Name())
 	}

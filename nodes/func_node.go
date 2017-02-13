@@ -27,7 +27,7 @@ func (self *_expr_func_node) NameValue(context expr.ExprContext) values.Func {
 }
 
 func (self *_expr_func_node) ArgValues(context expr.ExprContext) []values.Value {
-	ret := make([]values.Value, len(self.args))
+	ret := make([]values.Value, 0, len(self.args))
 	for _, v := range self.args {
 		ret = append(ret, v.Value(context))
 	}
@@ -35,7 +35,7 @@ func (self *_expr_func_node) ArgValues(context expr.ExprContext) []values.Value 
 }
 
 func (self *_expr_func_node) ArgTypes(values []values.Value) []types.Type {
-	ret := make([]types.Type, len(values))
+	ret := make([]types.Type, 0, len(values))
 	for _, v := range values {
 		ret = append(ret, v.Type())
 	}
@@ -62,7 +62,7 @@ func (self *_expr_func_node) Value(context expr.ExprContext) values.Value {
 }
 
 func (self *_expr_func_node) String() string {
-	argvalues := make([]string, len(self.args)+1)
+	argvalues := make([]string, 0, len(self.args)+1)
 	argvalues = append(argvalues, self.name.String())
 	for _, v := range self.args {
 		argvalues = append(argvalues, v.String())

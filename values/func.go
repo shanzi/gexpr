@@ -34,15 +34,15 @@ func (self *_func) Type() types.Type {
 }
 
 func (self *_func) Int64() int64 {
-	panic("Not Implemented!")
+	panic("Not implemented!")
 }
 
 func (self *_func) Float64() float64 {
-	panic("Not Implemented!")
+	panic("Not implemented!")
 }
 
 func (self *_func) Bool() bool {
-	panic("Not Implemented!")
+	panic("Not implemented!")
 }
 
 func (self *_func) String() string {
@@ -50,7 +50,7 @@ func (self *_func) String() string {
 }
 
 func (self *_func) Accept(values []Value) bool {
-	argtypes := make([]types.Type, len(values))
+	argtypes := make([]types.Type, 0, len(values))
 	for _, t := range values {
 		argtypes = append(argtypes, t.Type())
 	}

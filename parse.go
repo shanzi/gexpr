@@ -57,7 +57,7 @@ func transform(expr ast.Expr) expr.ExprNode {
 
 func createFuncNode(exp *ast.CallExpr) expr.ExprNode {
 	args := exp.Args
-	argvalues := make([]expr.ExprNode, len(args))
+	argvalues := make([]expr.ExprNode, 0, len(args))
 	for _, arg := range args {
 		argvalues = append(argvalues, transform(arg))
 	}

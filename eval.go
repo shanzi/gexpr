@@ -20,7 +20,7 @@ func Evaluate(exp expr.Expr, params map[string]interface{}) (interface{}, error)
 	}
 }
 
-func EvaluateType(exp expr.Expr, params map[string]types.Type) (types.Type, error) {
+func EvaluateType(exp expr.Expr, params map[string]interface{}) (types.Type, error) {
 	if pm, err := symbols.PackMap(params); err != nil {
 		return nil, err
 	} else {

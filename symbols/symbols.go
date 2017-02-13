@@ -10,6 +10,8 @@ import (
 
 type Symbol interface {
 	values.Value
+
+	SymbolName() string
 }
 
 type base_symbol struct {
@@ -21,35 +23,41 @@ var float_symbol = &base_symbol{types.FLOAT}
 var boolean_symbol = &base_symbol{types.BOOLEAN}
 var string_symbol = &base_symbol{types.STRING}
 
-func Pack(tp types.Type) (Symbol, error) {
-	if types.INTEGER.Equals(tp) {
-		return integer_symbol, nil
+func Pack(tp interface{}) (Symbol, error) {
+	if s, ok := tp.(Symbol); ok {
+		return s, nil
 	}
 
-	if types.FLOAT.Equals(tp) {
-		return float_symbol, nil
+	if t, ok := tp.(types.Type); ok {
+		if types.INTEGER.Equals(t) {
+			return integer_symbol, nil
+		}
+
+		if types.FLOAT.Equals(t) {
+			return float_symbol, nil
+		}
+
+		if types.BOOLEAN.Equals(t) {
+			return boolean_symbol, nil
+		}
+
+		if types.STRING.Equals(t) {
+			return string_symbol, nil
+		}
 	}
 
-	if types.BOOLEAN.Equals(tp) {
-		return boolean_symbol, nil
+	if f, ok := tp.(values.Func); ok {
+		return PackFunc(f), nil
 	}
 
-	if types.STRING.Equals(tp) {
-		return string_symbol, nil
-	}
-
-	if f, ok := tp.(types.Func); ok {
-		return &base_symbol{f}, nil
-	}
-
-	return nil, errors.New(fmt.Sprint("Unsupported type: ", tp.Name()))
+	return nil, errors.New(fmt.Sprint("Unsupported type: ", tp))
 }
 
 func Unpack(v values.Value) (types.Type, error) {
 	return v.Type(), nil
 }
 
-func PackMap(params map[string]types.Type) (map[string]values.Value, error) {
+func PackMap(params map[string]interface{}) (map[string]values.Value, error) {
 	ret := make(map[string]values.Value, len(params))
 	for k, v := range params {
 		if value, err := Pack(v); err != nil {
@@ -61,8 +69,8 @@ func PackMap(params map[string]types.Type) (map[string]values.Value, error) {
 	return ret, nil
 }
 
-func PackSlice(params []types.Type) ([]values.Value, error) {
-	ret := make([]values.Value, len(params))
+func PackSlice(params []interface{}) ([]values.Value, error) {
+	ret := make([]values.Value, 0, len(params))
 	for _, v := range params {
 		if value, err := Pack(v); err != nil {
 			return nil, errors.New(fmt.Sprint("Unsupported value type for key"))
@@ -74,7 +82,7 @@ func PackSlice(params []types.Type) ([]values.Value, error) {
 }
 
 func UnpackSlice(params []values.Value) ([]types.Type, error) {
-	ret := make([]types.Type, len(params))
+	ret := make([]types.Type, 0, len(params))
 	for _, v := range params {
 		if value, err := Unpack(v); err != nil {
 			return nil, errors.New(fmt.Sprint("Unsupported value type for key"))
@@ -110,4 +118,8 @@ func (self *base_symbol) Bool() bool {
 
 func (self *base_symbol) String() string {
 	return fmt.Sprintf("symbol<%s>", self.Type().Name())
+}
+
+func (self *base_symbol) SymbolName() string {
+	return self.String()
 }

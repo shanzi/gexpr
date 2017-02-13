@@ -54,7 +54,7 @@ func PackMap(params map[string]interface{}) (map[string]Value, error) {
 }
 
 func PackSlice(params []interface{}) ([]Value, error) {
-	ret := make([]Value, len(params))
+	ret := make([]Value, 0, len(params))
 	for _, v := range params {
 		if value, err := Pack(v); err != nil {
 			return nil, errors.New(fmt.Sprint("Unsupported value type"))
@@ -83,7 +83,7 @@ func Unpack(v Value) (interface{}, error) {
 }
 
 func UnpackSlice(params []Value) ([]interface{}, error) {
-	ret := make([]interface{}, len(params))
+	ret := make([]interface{}, 0, len(params))
 	for _, v := range params {
 		if value, err := Unpack(v); err != nil {
 			return nil, errors.New(fmt.Sprint("Unsupported value type"))
