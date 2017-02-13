@@ -18,6 +18,8 @@ type Value interface {
 
 func Pack(v interface{}) (Value, error) {
 	switch value := v.(type) {
+	case Value:
+		return value, nil
 	case int:
 		return Integer(value), nil
 	case int16:
@@ -39,6 +41,30 @@ func Pack(v interface{}) (Value, error) {
 	}
 }
 
+func PackMap(params map[string]interface{}) (map[string]Value, error) {
+	ret := make(map[string]Value, len(params))
+	for k, v := range params {
+		if value, err := Pack(v); err != nil {
+			return nil, errors.New(fmt.Sprint("Unsupported value type for key: ", k))
+		} else {
+			ret[k] = value
+		}
+	}
+	return ret, nil
+}
+
+func PackSlice(params []interface{}) ([]Value, error) {
+	ret := make([]Value, len(params))
+	for _, v := range params {
+		if value, err := Pack(v); err != nil {
+			return nil, errors.New(fmt.Sprint("Unsupported value type"))
+		} else {
+			ret = append(ret, value)
+		}
+	}
+	return ret, nil
+}
+
 func Unpack(v Value) (interface{}, error) {
 	tp := v.Type()
 	if tp.Match(types.INTEGER) {
@@ -54,4 +80,16 @@ func Unpack(v Value) (interface{}, error) {
 		return v.String(), nil
 	}
 	return nil, errors.New(fmt.Sprint("Can not unpack value of type: ", tp.Name()))
+}
+
+func UnpackSlice(params []Value) ([]interface{}, error) {
+	ret := make([]interface{}, len(params))
+	for _, v := range params {
+		if value, err := Unpack(v); err != nil {
+			return nil, errors.New(fmt.Sprint("Unsupported value type"))
+		} else {
+			ret = append(ret, value)
+		}
+	}
+	return ret, nil
 }

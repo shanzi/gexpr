@@ -38,11 +38,51 @@ func Pack(tp types.Type) (Symbol, error) {
 		return string_symbol, nil
 	}
 
+	if f, ok := tp.(types.Func); ok {
+		return &base_symbol{f}, nil
+	}
+
 	return nil, errors.New(fmt.Sprint("Unsupported type: ", tp.Name()))
 }
 
 func Unpack(v values.Value) (types.Type, error) {
 	return v.Type(), nil
+}
+
+func PackMap(params map[string]types.Type) (map[string]values.Value, error) {
+	ret := make(map[string]values.Value, len(params))
+	for k, v := range params {
+		if value, err := Pack(v); err != nil {
+			return nil, errors.New(fmt.Sprint("Unsupported value type for key: ", k))
+		} else {
+			ret[k] = value
+		}
+	}
+	return ret, nil
+}
+
+func PackSlice(params []types.Type) ([]values.Value, error) {
+	ret := make([]values.Value, len(params))
+	for _, v := range params {
+		if value, err := Pack(v); err != nil {
+			return nil, errors.New(fmt.Sprint("Unsupported value type for key"))
+		} else {
+			ret = append(ret, value)
+		}
+	}
+	return ret, nil
+}
+
+func UnpackSlice(params []values.Value) ([]types.Type, error) {
+	ret := make([]types.Type, len(params))
+	for _, v := range params {
+		if value, err := Unpack(v); err != nil {
+			return nil, errors.New(fmt.Sprint("Unsupported value type for key"))
+		} else {
+			ret = append(ret, value)
+		}
+	}
+	return ret, nil
 }
 
 func GetSymbol(typ types.Type) Symbol {

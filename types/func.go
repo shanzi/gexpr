@@ -17,7 +17,7 @@ type _func struct {
 	ret  Type
 }
 
-func NewFuncType(argtypes []Type, rettype Type) Func {
+func NewFunc(argtypes []Type, rettype Type) Func {
 	return &_func{argtypes, rettype}
 }
 
